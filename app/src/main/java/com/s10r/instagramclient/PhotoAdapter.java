@@ -2,6 +2,7 @@ package com.s10r.instagramclient;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,13 +43,32 @@ public class PhotoAdapter extends ArrayAdapter<Photo> {
         tvLikes.setText(photo.getLikesCount() + " likes");
 
         TextView tvTimestamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        tvTimestamp.setText(formatter.format(photo.getCreatedAt()));
+        tvTimestamp.setText(relativeTime(photo.getCreatedAt()));
 
         ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
         ivPhoto.setImageResource(0);
         Picasso.with(getContext()).load(photo.getImageUrl()).into(ivPhoto);
 
         return convertView;
+    }
+
+    private String relativeTime(Date other) {
+        long distance = Math.abs(other.getTime() - (new Date()).getTime());
+
+        if (distance < DateUtils.MINUTE_IN_MILLIS) {
+            return "just now";
+        } else if (distance < DateUtils.HOUR_IN_MILLIS) {
+            long minutes = distance / DateUtils.MINUTE_IN_MILLIS;
+            return minutes + " minutes ago";
+        } else if (distance < DateUtils.DAY_IN_MILLIS) {
+            long hours = distance / DateUtils.HOUR_IN_MILLIS;
+            return hours + " hours ago";
+        } else if (distance < DateUtils.WEEK_IN_MILLIS) {
+            long days = distance / DateUtils.DAY_IN_MILLIS;
+            return days + " days ago";
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return formatter.format(other);
+        }
     }
 }

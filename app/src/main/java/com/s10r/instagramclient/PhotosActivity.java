@@ -3,6 +3,7 @@ package com.s10r.instagramclient;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,7 +60,7 @@ public class PhotosActivity extends AppCompatActivity {
                                 photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getString("url"),
                                 photoJSON.getJSONObject("images").getJSONObject("standard_resolution").getInt("height"),
                                 photoJSON.getJSONObject("likes").getInt("count"),
-                                Long.valueOf(photoJSON.getString("created_time")).longValue()
+                                Long.valueOf(photoJSON.getString("created_time")).longValue()  * DateUtils.SECOND_IN_MILLIS
                         ));
 
                     }

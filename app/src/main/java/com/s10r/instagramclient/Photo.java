@@ -1,6 +1,8 @@
 package com.s10r.instagramclient;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by bschmeckpeper on 10/25/15.
@@ -19,7 +21,11 @@ public class Photo {
         this.imageUrl = imageUrl;
         this.imageHeight = imageHeight;
         this.likesCount = likesCount;
-        this.createdAt = new Date(createdAt * 1000);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(TimeZone.getTimeZone("GMT"));
+        cal.setTimeInMillis(createdAt);
+        this.createdAt = cal.getTime();
     }
 
     public String getUsername() {
