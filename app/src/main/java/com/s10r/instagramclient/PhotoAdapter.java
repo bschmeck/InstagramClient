@@ -57,18 +57,31 @@ public class PhotoAdapter extends ArrayAdapter<Photo> {
 
         if (distance < DateUtils.MINUTE_IN_MILLIS) {
             return "just now";
-        } else if (distance < DateUtils.HOUR_IN_MILLIS) {
-            long minutes = distance / DateUtils.MINUTE_IN_MILLIS;
-            return minutes + " minutes ago";
-        } else if (distance < DateUtils.DAY_IN_MILLIS) {
-            long hours = distance / DateUtils.HOUR_IN_MILLIS;
-            return hours + " hours ago";
-        } else if (distance < DateUtils.WEEK_IN_MILLIS) {
-            long days = distance / DateUtils.DAY_IN_MILLIS;
-            return days + " days ago";
-        } else {
+        } else if (distance > DateUtils.WEEK_IN_MILLIS) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             return formatter.format(other);
         }
+
+        long threshold;
+        String timeUnit;
+
+        if (distance < DateUtils.HOUR_IN_MILLIS) {
+            threshold = DateUtils.MINUTE_IN_MILLIS;
+            timeUnit = "minute";
+        } else if (distance < DateUtils.DAY_IN_MILLIS) {
+            threshold = DateUtils.HOUR_IN_MILLIS;
+            timeUnit = "hour";
+        } else {
+            threshold = DateUtils.DAY_IN_MILLIS;
+            timeUnit = "day";
+        }
+
+        long numeral = distance / threshold;
+        String pluralSuffix = "";
+        if (numeral > 1) {
+            pluralSuffix = "s";
+        }
+
+        return String.format("%d %s%s ago", numeral, timeUnit, pluralSuffix);
     }
 }
