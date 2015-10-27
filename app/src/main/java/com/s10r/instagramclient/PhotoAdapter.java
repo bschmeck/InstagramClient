@@ -30,26 +30,29 @@ public class PhotoAdapter extends ArrayAdapter<Photo> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_photo, parent, false);
         }
+        return populate(photo, convertView);
+    }
 
-        TextView tvCaption = (TextView) convertView.findViewById(R.id.tvCaption);
+    public View populate(Photo photo, View view) {
+        TextView tvCaption = (TextView) view.findViewById(R.id.tvCaption);
         tvCaption.setText(photo.getCaption());
         tvCaption.setMaxLines(PhotosActivity.COLLAPSED_LINES);
         tvCaption.setEllipsize(TextUtils.TruncateAt.END);
 
-        TextView tvUsername = (TextView) convertView.findViewById(R.id.tvUsername);
+        TextView tvUsername = (TextView) view.findViewById(R.id.tvUsername);
         tvUsername.setText(photo.getUsername());
 
-        TextView tvLikes = (TextView) convertView.findViewById(R.id.tvLikes);
+        TextView tvLikes = (TextView) view.findViewById(R.id.tvLikes);
         tvLikes.setText(photo.getLikesCount() + " likes");
 
-        TextView tvTimestamp = (TextView) convertView.findViewById(R.id.tvTimestamp);
+        TextView tvTimestamp = (TextView) view.findViewById(R.id.tvTimestamp);
         tvTimestamp.setText(relativeTime(photo.getCreatedAt()));
 
-        ImageView ivPhoto = (ImageView) convertView.findViewById(R.id.ivPhoto);
+        ImageView ivPhoto = (ImageView) view.findViewById(R.id.ivPhoto);
         ivPhoto.setImageResource(0);
         Picasso.with(getContext()).load(photo.getImageUrl()).into(ivPhoto);
 
-        return convertView;
+        return view;
     }
 
     private String relativeTime(Date other) {
