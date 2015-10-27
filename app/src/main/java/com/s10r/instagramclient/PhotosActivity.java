@@ -1,6 +1,7 @@
 package com.s10r.instagramclient;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import cz.msebera.android.httpclient.Header;
 
 public class PhotosActivity extends AppCompatActivity {
+    private SwipeRefreshLayout swipeContainer;
 
     public static final String CLIENT_ID = "f727b8c4de2e49d08d590dc4646a5e3f";
     public static final int COLLAPSED_LINES = 3;
@@ -32,6 +34,20 @@ public class PhotosActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_photos);
+
+        swipeContainer = (SwipeRefreshLayout)findViewById(R.id.swipeContainer);
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchPopularPhotos();
+            }
+        });
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         popularPhotos = new ArrayList<>();
         photoAdapter = new PhotoAdapter(this, popularPhotos);
         ListView lvPhotos = (ListView) findViewById(R.id.lvPhotos);
@@ -47,6 +63,7 @@ public class PhotosActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 JSONArray photosJSON = null;
                 try {
+                    photoAdapter.clear();
                     photosJSON = response.getJSONArray("data");
                     for (int i = 0; i < photosJSON.length(); i++) {
                         JSONObject photoJSON = photosJSON.getJSONObject(i);
@@ -65,6 +82,7 @@ public class PhotosActivity extends AppCompatActivity {
 
                     }
                     photoAdapter.notifyDataSetChanged();
+                    swipeContainer.setRefreshing(false);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
