@@ -50,7 +50,10 @@ public class PhotoAdapter extends ArrayAdapter<Photo> {
 
         ImageView ivPhoto = (ImageView) view.findViewById(R.id.ivPhoto);
         ivPhoto.setImageResource(0);
-        Picasso.with(getContext()).load(photo.getImageUrl()).into(ivPhoto);
+        Picasso.with(getContext())
+                .load(photo.getImageUrl())
+                .placeholder(R.mipmap.placeholder)
+                .into(ivPhoto);
 
         return view;
     }
